@@ -1,96 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const Recipe = require('../models/recipe');
+// in routes/stuff.js
 
-router.post("/", (req, res, next) => {
-    const recipe = new Recipe({
-        title: req.body.title,
-        ingredients: req.body.ingredients,
-        instructions: req.body.instructions,
-        difficulty: req.body.difficulty,
-        time: req.body.time,
-        _id: req.body._id
-    });
+const RecipeController = require('../controllers/Recipes');
 
-    recipe.save().then(() => {
-        res.status(201).json({
-            message: 'New Recipe saved successfully!'
-        });
-    }).catch((error) => {
-        res.status(400).json({
-            error: error
-        });
-    });
-});
+router.post("/", RecipeController.CreateRecipe);
 
-router.put("/:id", (req, res, next) => {
-    //console.log(req.body);
-    res.status(201).json({
-        message: "Recipe updated successfully!",
-        data: req.body
-    });
-    const recipe = new Recipe({
-        title: req.body.title,
-        ingredients: req.body.ingredients,
-        instructions: req.body.instructions,
-        difficulty: req.body.difficulty,
-        time: req.body.time,
-        _id: req.body._id
-    });
-    Recipe.updateOne({
-        _id: req.params.id
-    }, recipe).then(() => {
-        res.status(201).json({
-            message: 'Thing updated successfully!'
-        });
-    }).catch((error) => {
-        res.status(400).json({
-            error: error
-        });
-    });
-});
-router.delete("/:id", (req, res, next) => {
+router.put("/:id", RecipeController.PutRecipes);
 
-    Recipe.deleteOne({
-        _id: req.params.id
-    }).then(() => {
-        res.status(200).json({
-            message: 'Deleted!'
-        });
-    }).catch((error) => {
-        res.status(400).json({
-            error: error
-        });
-    });
-});
+router.delete("/:id", RecipeController.DeleteRecipe);
 
-router.get("/:id", (req, res, next) => {
+router.get("/:id", RecipeController.Recipe);
 
-    Recipe.findOne({
-        _id: req.params.id
-    }).then((recipe) => {
-        res.status(200).json({
-            data: recipe
-        });
-    }).catch((error) => {
-        res.status(404).json({
-            error: error
-        });
-    });
-});
-
-router.get("/" + "", (req, res, next) => {
-    Recipe.find().then((recipes) => {
-        res.status(200).json({
-            data: recipes
-        });
-    }).catch(
-        (error) => {
-            res.status(400).json({
-                error: error
-            });
-        }
-    );
-});
+router.get("/" + "", RecipeController.AllRecipe);
 
 module.exports = router;
